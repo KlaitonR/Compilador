@@ -25,7 +25,7 @@ public class PrincipalController {
 		al.lc.carregaCodigo(cod);
 		Token tk = null;
 		
-		while ((tk = al.analisaBuffer()) != null){
+		while (!(tk = al.proximoToken()).lexema.equals("Fim")){
 			tabelaDeTokens.add(tk);
 			System.out.println(tk);
 		}
