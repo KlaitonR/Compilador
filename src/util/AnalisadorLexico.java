@@ -101,6 +101,7 @@ public class AnalisadorLexico {
 			}else if(c == "+") {
 				return new Token(TipoToken.OpAritSoma, "+");
 		}else {
+			lc.retroceder();
 			return null;
 		}
 	}
@@ -111,6 +112,7 @@ public class AnalisadorLexico {
 		if(c == ":") {
 			return new Token(TipoToken.Delim, ":");
 		}else {
+			lc.retroceder();
 			return null;
 		}
 	}
@@ -121,9 +123,10 @@ public class AnalisadorLexico {
 		
 		if(c == "(") {
 			return new Token(TipoToken.AbrePar, "(");
-			}else if(c == ")") {
-				return new Token(TipoToken.FechaPar, ")");
+		}else if(c == ")") {
+			return new Token(TipoToken.FechaPar, ")");
 		}else {
+			lc.retroceder();
 			return null;
 		}
 	}
@@ -158,6 +161,7 @@ public class AnalisadorLexico {
 				return new Token(TipoToken.OpRelMaior, ">");
 			}
 		}else {
+			lc.retroceder();
 			return null;
 		}
 		
@@ -165,21 +169,22 @@ public class AnalisadorLexico {
 	
 	public Token numeros() {
 		
-		String lexema = "";
+		//String lexema = "";
 		String c = lc.proximoCaracter();
 		boolean inteiro = true;
 		
 		if(Character.isDigit(c.charAt(0))) {
 			
-			lc.retroceder(); // reinicia variaveis
-			c = "0";
+//			lc.retroceder(); // reinicia variaveis
+//			c = "0";
 			
 			while (Character.isDigit(c.charAt(0))) {
 				
 				c = lc.proximoCaracter();
 				
 				if (Character.isDigit(c.charAt(0))) {
-					lexema += c;
+					continue;
+					//lexema += c;
 				}else {
 					if (c == ".") {
 						
@@ -187,34 +192,39 @@ public class AnalisadorLexico {
 						
 						if(Character.isDigit(proxC.charAt(0))) {
 							inteiro = false;
-							lexema += proxC;
+							//lexema += proxC;
 							lc.retroceder();
 						}else {
 							lc.retroceder();
 							return null;
 						}
+					}else {
+						lc.retroceder();
+						return new Token(TipoToken.NumInt, lc.Lexema());
 					}
 				}
 			}
 		
-			c = lc.proximoCaracter();
-			
-			while (Character.isDigit(c.charAt(0))) {
+			if(!inteiro) {
+				
 				c = lc.proximoCaracter();
-				lexema += c;
+				
+				while (Character.isDigit(c.charAt(0))) {
+					c = lc.proximoCaracter();
+					//lexema += c;
+				}
+				
+				lc.retroceder();
+				return new Token(TipoToken.NumReal, lc.Lexema());
+				
+			}else {
+				return null;
 			}
 			
+		}else {
 			lc.retroceder();
-		
-			if(inteiro == true) {
-				return new Token(TipoToken.NumInt, lexema);
-			}else if (inteiro == false) {
-				return new Token(TipoToken.NumReal, lexema);
-			}
+			return null;
 		}
-		
-		return null;
-
 	}
 	
 	public Token variavel() {
@@ -232,35 +242,41 @@ public class AnalisadorLexico {
 			lc.retroceder();
 			return new Token(TipoToken.Var, lc.Lexema());
 		
+		}else {
+			lc.retroceder();
+			return null;
 		}
-		return null;
 	}
 	
 	public Token cadeia() {
 		
 		String c = lc.proximoCaracter();
+		String ch = "";
 		//String lexema = "";
 		
 		if(c == "'") {
 			
-			lc.retroceder(); // reinicia variaveis
-			c = "0";
+//			lc.retroceder(); // reinicia variaveis
+//			c = "";
 			
-			while(c != "\n" || c != "'") {
-				c = lc.proximoCaracter();
+			while(ch != "\n" && ch != "'") {
+				ch = lc.proximoCaracter();
 				//lexema += c;
 			}
 			
-			if(c == "\n") {
+			c =ch;
+			
+			if(c == "\n") { //Houve quebra de linha na cadeia, erro léxico
 				return null;
-			}else if (c == "'") {
+			}else{ // Se não é uma aspas simples "'" (fim da cadeia)
 				return new Token(TipoToken.Cadeia, lc.Lexema());
 			}
 			
+		}else {
+			lc.retroceder();
+			return null;
 		}
-		
-		return null;
-	
+
 	}
 	
 	public void espacosEcometarios() {
@@ -273,12 +289,12 @@ public class AnalisadorLexico {
 				c = lc.proximoCaracter();
 			}
 			
-			lc.retroceder();
+			//lc.retroceder();
 			return;
 			
 		}else if (Character.isWhitespace(c. charAt(0))) {
-			return;
-		}else if (Character.isWhitespace(c.charAt(0)) || c == "%") {
+			return; 
+		}else if (!Character.isWhitespace(c.charAt(0)) && c != "%") {
 			lc.retroceder();
 			return;
 		}
@@ -291,9 +307,6 @@ public class AnalisadorLexico {
 		//String lexema = "";
 		
 		if(Character.isLetter(c.charAt(0))) {
-			
-			lc.retroceder(); // reinicia variaveis
-			c = "a";
 			
 			while(Character.isLetter(c.charAt(0))) {
 				c = lc.proximoCaracter();
@@ -333,23 +346,35 @@ public class AnalisadorLexico {
 			}else {
 				return null;
 			}
+		}else {
+			lc.retroceder();
+			return null;
 		}
-		
-		return null;
-		
 	}
 	
 	public Token fim() {
 		
-		if(lc.Lexema().equals("FIM")) {
-			return new Token(TipoToken.Fim, "Fim");
+		String c = lc.proximoCaracter();
+		//String lexema = "";
+		
+		if(Character.isLetter(c.charAt(0))) {
+			
+			while(Character.isLetter(c.charAt(0))) {
+				c = lc.proximoCaracter();
+				//lexema += c;
+			}
+		
+			if(lc.Lexema().equals("Fim")) {
+				return new Token(TipoToken.Fim, "Fim");
+			}else {
+				return null;
+			}	
+			
 		}else {
+			lc.retroceder();
 			return null;
 		}
-		
+	
 	}
-	
-	
-	
 
 }
