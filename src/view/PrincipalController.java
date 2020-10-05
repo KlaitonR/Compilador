@@ -1,17 +1,15 @@
 package view;
 
 import java.util.ArrayList;
-
-
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import util.AnalisadorLexico;
 import util.Token;
 
 public class PrincipalController {
 	
 	
-	@FXML Label codigo;
+	@FXML TextArea codigo;
 	
 	String cod;
 	
@@ -26,7 +24,7 @@ public class PrincipalController {
 		Token tk = null;
 		
 		while (!(tk = al.proximoToken()).lexema.equals("Fim")){
-			tabelaDeTokens.add(tk);
+			//tabelaDeTokens.add(tk);
 			System.out.println(tk);
 		}
 		

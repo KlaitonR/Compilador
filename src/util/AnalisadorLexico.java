@@ -3,15 +3,88 @@ package util;
 public class AnalisadorLexico {
 	
 	public LeitorDeCodigo lc = new LeitorDeCodigo();
-	String lexema;
 	
 	public Token proximoToken() {
 		
 		Token proximo = null;
 		
 		espacosEcometarios();
-	
-		return new Token(TipoToken.AbrePar, "lexema");
+		lc.confirmar();
+		
+		proximo = fim();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		proximo = palavraChave();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		
+		proximo = variavel();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		proximo = numeros();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		proximo = cadeia();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		proximo = operadorAritmetico();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		proximo = operadorRelacional();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		proximo = parenteses();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		proximo = delimitador();
+		if(proximo == null) {
+			lc.zerar();
+		}else {
+			lc.confirmar();
+			return proximo;
+		}
+		
+		return null;
 		
 	}
 	
@@ -147,17 +220,17 @@ public class AnalisadorLexico {
 	public Token variavel() {
 		
 		String c = lc.proximoCaracter();
-		String lexema = "";
+		//String lexema = "";
 		
 		if(Character.isLetter(c.charAt(0))) {
 			
 			while (Character.isLetterOrDigit(c.charAt(0))) {
-				lexema += c;
+				//lexema += c;
 				c = lc.proximoCaracter();
 			}
 			
 			lc.retroceder();
-			return new Token(TipoToken.Var, lexema);
+			return new Token(TipoToken.Var, lc.Lexema());
 		
 		}
 		return null;
@@ -166,7 +239,7 @@ public class AnalisadorLexico {
 	public Token cadeia() {
 		
 		String c = lc.proximoCaracter();
-		String lexema = "";
+		//String lexema = "";
 		
 		if(c == "'") {
 			
@@ -175,13 +248,13 @@ public class AnalisadorLexico {
 			
 			while(c != "\n" || c != "'") {
 				c = lc.proximoCaracter();
-				lexema += c;
+				//lexema += c;
 			}
 			
 			if(c == "\n") {
 				return null;
 			}else if (c == "'") {
-				return new Token(TipoToken.Cadeia, lexema);
+				return new Token(TipoToken.Cadeia, lc.Lexema());
 			}
 			
 		}
@@ -203,7 +276,7 @@ public class AnalisadorLexico {
 			lc.retroceder();
 			return;
 			
-		}else if (Character.isWhitespace(c.charAt(0))) {
+		}else if (Character.isWhitespace(c. charAt(0))) {
 			return;
 		}else if (Character.isWhitespace(c.charAt(0)) || c == "%") {
 			lc.retroceder();
@@ -215,7 +288,7 @@ public class AnalisadorLexico {
 	public Token palavraChave() {
 		
 		String c = lc.proximoCaracter();
-		String lexema = "";
+		//String lexema = "";
 		
 		if(Character.isLetter(c.charAt(0))) {
 			
@@ -224,39 +297,39 @@ public class AnalisadorLexico {
 			
 			while(Character.isLetter(c.charAt(0))) {
 				c = lc.proximoCaracter();
-				lexema += c;
+				//lexema += c;
 			}
 			
-			if(lexema.equals("DECLARACOES")) {
-				return new Token(TipoToken.PCDeclaracoes, lexema);
-			}else if (lexema.equals("ALGORITMO")) {
-				return new Token(TipoToken.PCAlgoritmo, lexema);
-			}else if (lexema.equals("INT")) {
-				return new Token(TipoToken.PCInteiro, lexema);
-			}else if (lexema.equals("REAL")) {
-				return new Token(TipoToken.PCReal, lexema);
-			}else if (lexema.equals("ATRIBUIR")) {
-				return new Token(TipoToken.PCAtribuir, lexema);
-			}else if (lexema.equals("A")) {
-				return new Token(TipoToken.PCA, lexema);
-			}else if (lexema.equals("LER")) {
-				return new Token(TipoToken.PCLer, lexema);
-			}else if (lexema.equals("IMPRIMIR")) {
-				return new Token(TipoToken.PCImprimir, lexema);
-			}else if (lexema.equals("SE")) {
-				return new Token(TipoToken.PCSe, lexema);
-			}else if (lexema.equals("ENTAO")) {
-				return new Token(TipoToken.PCEntao, lexema);
-			}else if (lexema.equals("ENQUANTO")) {
-				return new Token(TipoToken.PCEnquanto, lexema);
-			}else if (lexema.equals("INICIO")) {
-				return new Token(TipoToken.PCInicio, lexema);
-			}else if (lexema.equals("FIM")) {
-				return new Token(TipoToken.PCFim, lexema);
-			}else if (lexema.equals("E")) {
-				return new Token(TipoToken.OpBoolE, lexema);
-			}else if (lexema.equals("OU")) {
-				return new Token(TipoToken.OpBoolOu, lexema);
+			if(lc.Lexema().equals("DECLARACOES")) {
+				return new Token(TipoToken.PCDeclaracoes, lc.Lexema());
+			}else if (lc.Lexema().equals("ALGORITMO")) {
+				return new Token(TipoToken.PCAlgoritmo, lc.Lexema());
+			}else if (lc.Lexema().equals("INT")) {
+				return new Token(TipoToken.PCInteiro, lc.Lexema());
+			}else if (lc.Lexema().equals("REAL")) {
+				return new Token(TipoToken.PCReal, lc.Lexema());
+			}else if (lc.Lexema().equals("ATRIBUIR")) {
+				return new Token(TipoToken.PCAtribuir, lc.Lexema());
+			}else if (lc.Lexema().equals("A")) {
+				return new Token(TipoToken.PCA, lc.Lexema());
+			}else if (lc.Lexema().equals("LER")) {
+				return new Token(TipoToken.PCLer, lc.Lexema());
+			}else if (lc.Lexema().equals("IMPRIMIR")) {
+				return new Token(TipoToken.PCImprimir, lc.Lexema());
+			}else if (lc.Lexema().equals("SE")) {
+				return new Token(TipoToken.PCSe, lc.Lexema());
+			}else if (lc.Lexema().equals("ENTAO")) {
+				return new Token(TipoToken.PCEntao, lc.Lexema());
+			}else if (lc.Lexema().equals("ENQUANTO")) {
+				return new Token(TipoToken.PCEnquanto, lc.Lexema());
+			}else if (lc.Lexema().equals("INICIO")) {
+				return new Token(TipoToken.PCInicio, lc.Lexema());
+			}else if (lc.Lexema().equals("FIM")) {
+				return new Token(TipoToken.PCFim, lc.Lexema());
+			}else if (lc.Lexema().equals("E")) {
+				return new Token(TipoToken.OpBoolE, lc.Lexema());
+			}else if (lc.Lexema().equals("OU")) {
+				return new Token(TipoToken.OpBoolOu, lc.Lexema());
 			}else {
 				return null;
 			}
@@ -268,9 +341,7 @@ public class AnalisadorLexico {
 	
 	public Token fim() {
 		
-		String c = lc.proximoCaracter();
-		
-		if(c == null) {
+		if(lc.Lexema().equals("FIM")) {
 			return new Token(TipoToken.Fim, "Fim");
 		}else {
 			return null;
