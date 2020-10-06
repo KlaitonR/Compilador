@@ -92,13 +92,13 @@ public class AnalisadorLexico {
 		
 		String c = lc.proximoCaracter();
 		
-		if(c == "*") {
+		if(c.equals("*")) {
 			return new Token(TipoToken.OpAritMult, "*");
-			}else if(c == "/") {
+			}else if(c.equals("/")) {
 				return new Token(TipoToken.OpAritDiv, "/");
-			}else if(c == "-") {
+			}else if(c.equals("-")) {
 				return new Token(TipoToken.OpAritSub, "-");
-			}else if(c == "+") {
+			}else if(c.equals("+")) {
 				return new Token(TipoToken.OpAritSoma, "+");
 		}else {
 			lc.retroceder();
@@ -107,9 +107,10 @@ public class AnalisadorLexico {
 	}
 	
 	public Token delimitador() {
+		
 		String c = lc.proximoCaracter();
 		
-		if(c == ":") {
+		if(c.equals(":")) {
 			return new Token(TipoToken.Delim, ":");
 		}else {
 			lc.retroceder();
@@ -121,9 +122,9 @@ public class AnalisadorLexico {
 		
 		String c = lc.proximoCaracter();
 		
-		if(c == "(") {
+		if(c.equals("(")) {
 			return new Token(TipoToken.AbrePar, "(");
-		}else if(c == ")") {
+		}else if(c.equals(")")) {
 			return new Token(TipoToken.FechaPar, ")");
 		}else {
 			lc.retroceder();
@@ -135,26 +136,26 @@ public class AnalisadorLexico {
 	
 		String c = lc.proximoCaracter();
 		
-		if(c == "<") {
+		if(c.equals("<")) {
 			
 			String proxC = lc.proximoCaracter();
 			
-			if(proxC == ">") {
+			if(proxC.equals(">")) {
 				return new Token(TipoToken.OpRelDif, "<>");
-			}else if (proxC == "=") {
+			}else if (proxC.equals("=")) {
 				return new Token(TipoToken.OpRelMenorigual, "<=");
 			}else {
 				lc.retroceder();
 				return new Token(TipoToken.OpRelMenor, "<");
 			}
 			
-		}else if (c == "=") {
+		}else if (c.equals("=")) {
 			return new Token(TipoToken.opRelIgual, "=");
-		}else if (c == ">") {
+		}else if (c.equals(">")) {
 			
 			String proxC = lc.proximoCaracter();
 			
-			if (proxC == "=") {
+			if (proxC.equals("=")) {
 				return new Token(TipoToken.OpRelMaior, ">=");
 			}else {
 				lc.retroceder();
@@ -186,7 +187,7 @@ public class AnalisadorLexico {
 					continue;
 					//lexema += c;
 				}else {
-					if (c == ".") {
+					if (c.equals(".")) {
 						
 						String proxC = lc.proximoCaracter();
 						
@@ -259,7 +260,7 @@ public class AnalisadorLexico {
 //			lc.retroceder(); // reinicia variaveis
 //			c = "";
 			
-			while(ch != "\n" && ch != "'") {
+			while(!ch.equals("\n") && !ch.equals("'")) {
 				ch = lc.proximoCaracter();
 				//lexema += c;
 			}
@@ -283,9 +284,9 @@ public class AnalisadorLexico {
 		
 		String c = lc.proximoCaracter();
 		
-		if(c == "%") {
+		if(c.equals("%")) {
 			
-			while(c != "\n") {
+			while(!c.equals("\n")) {
 				c = lc.proximoCaracter();
 			}
 			
@@ -294,7 +295,7 @@ public class AnalisadorLexico {
 			
 		}else if (Character.isWhitespace(c. charAt(0))) {
 			return; 
-		}else if (!Character.isWhitespace(c.charAt(0)) && c != "%") {
+		}else if (!Character.isWhitespace(c.charAt(0)) && !c.equals("%")) {
 			lc.retroceder();
 			return;
 		}
@@ -361,6 +362,10 @@ public class AnalisadorLexico {
 			
 			while(Character.isLetter(c.charAt(0))) {
 				c = lc.proximoCaracter();
+				
+				if(c == null) {
+					break;
+				}
 				//lexema += c;
 			}
 		

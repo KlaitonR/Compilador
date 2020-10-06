@@ -145,26 +145,30 @@ public class LeitorDeCodigo {
 	
 	public String lerCaracterDoBuffer() {
 		
-		String ret = buffer[ponteiroBuffer];
-		incrementaPonteiro();
-		return ret;
+		String c = buffer[ponteiroBuffer];
+		ponteiroBuffer++;
+		
+		if(ponteiroBuffer == buffer.length/2) {
+			carregaBuffer2();
+		}else if (ponteiroBuffer == buffer.length) {
+			carregaBuffer1();
+		}
+		
+//		if(c == null) {
+//			return c = "-1";
+//		}else {
+			return c;
+//		}
 	}
 	
 	public String proximoCaracter() {
 		
 		String c = lerCaracterDoBuffer();
 		
-		lexema += c;
+		if(c != null)
+			lexema += c;
+		
 		return c;
-	}
-	
-	public void incrementaPonteiro() {
-		ponteiroBuffer++;
-		if(ponteiroBuffer == buffer.length/2) {
-			carregaBuffer2();
-		}else if (ponteiroBuffer == buffer.length) {
-			carregaBuffer1();
-		}
 	}
 	
 	public void zerar() {
