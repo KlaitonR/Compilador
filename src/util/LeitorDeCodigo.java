@@ -4,16 +4,12 @@ public class LeitorDeCodigo {
 	
 	
 	int bufferAtual = 1;
-	
 	String codigo;
 	int ponteiroCodigo;
-	int ponteiroBuffer = 0;
+	int ponteiroBuffer;
 	int iniciolexema;
 	String lexema;
-//	public String buffer[] = new String [40];
-	public String buffer[];
-	int estadoBuffer = 2;
-	
+	String buffer[];
 	int tCod;
 	
 	public void carregaCodigo(String codigo) {
@@ -24,68 +20,8 @@ public class LeitorDeCodigo {
 		inicializarBuffer();
 	}
 	
-//	public String proximoCaracter() {
-//		
-//		String c = "";
-//		
-//		if(buffer != null) {
-//			
-//			if(estadoBuffer == 1 && ponteiroBuffer < buffer.length/2) {
-//				c = buffer[ponteiroBuffer];
-//				ponteiroBuffer++;
-//				return c;
-//			
-//			}else if(estadoBuffer == 1 && ponteiroBuffer >= buffer.length/2) {
-//				carregaBuffer2();
-//				c = buffer[ponteiroBuffer];
-//				ponteiroBuffer++;
-//				return c;
-//				
-//			}else if(estadoBuffer == 2 && ponteiroBuffer < buffer.length) {
-//				c = buffer[ponteiroBuffer];
-//				ponteiroBuffer++;
-//				return c;
-//
-//			}else if(estadoBuffer == 2 && ponteiroBuffer == buffer.length) {
-//				carregaBuffer1();
-//				ponteiroBuffer = 0;
-//				c = buffer[ponteiroBuffer];
-//				ponteiroBuffer++;
-//				return c;
-//				
-//			}
-//			
-//		}else {
-//			carregaBuffer1();
-//		}
-//		
-//		return c;
-//	
-//	}
-
-//	public void carregaBuffer1() {
-//		
-//		estadoBuffer = 1;
-//		
-//		for(int i=0; i<buffer.length/2;i++) {
-//			buffer[i] = codigo.substring(ponteiroCodigo);
-//			ponteiroCodigo++;
-//		}
-//		
-//	}
-//	
-//	public void carregaBuffer2() {
-//		
-//		estadoBuffer = 2;
-//		
-//		for(int i = buffer.length/2; i<buffer.length;i++) {
-//			buffer[i] = codigo.substring(ponteiroCodigo);
-//			ponteiroCodigo++;
-//		}
-//		
-//	}
-	
 	public void carregaBuffer1() {
+		
 		if(bufferAtual == 2) {
 			bufferAtual = 1;
 			
@@ -107,7 +43,7 @@ public class LeitorDeCodigo {
 		if(bufferAtual == 1) {
 			bufferAtual = 2;
 			
-			for(int i = buffer.length/2; i <= buffer.length;i++) {
+			for(int i = buffer.length/2; i < buffer.length ;i++) {
 				
 				if(ponteiroCodigo <= tCod) {
 				buffer[i] = Character.toString(codigo.charAt(ponteiroCodigo));
@@ -115,11 +51,8 @@ public class LeitorDeCodigo {
 				}else{
 					break;
 				}
-				 
-					
-				
+
 			}
-			
 		}
 	}
 	
@@ -148,10 +81,11 @@ public class LeitorDeCodigo {
 		String c = buffer[ponteiroBuffer];
 		ponteiroBuffer++;
 		
-		if(ponteiroBuffer == buffer.length/2) {
+		if(ponteiroBuffer == (buffer.length/2)) {
 			carregaBuffer2();
 		}else if (ponteiroBuffer == buffer.length) {
 			carregaBuffer1();
+			ponteiroBuffer = 0;
 		}
 		
 //		if(c == null) {

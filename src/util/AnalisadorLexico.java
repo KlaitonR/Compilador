@@ -85,7 +85,6 @@ public class AnalisadorLexico {
 		}
 		
 		return null;
-		
 	}
 	
 	public Token operadorAritmetico() {
@@ -94,12 +93,12 @@ public class AnalisadorLexico {
 		
 		if(c.equals("*")) {
 			return new Token(TipoToken.OpAritMult, "*");
-			}else if(c.equals("/")) {
-				return new Token(TipoToken.OpAritDiv, "/");
-			}else if(c.equals("-")) {
-				return new Token(TipoToken.OpAritSub, "-");
-			}else if(c.equals("+")) {
-				return new Token(TipoToken.OpAritSoma, "+");
+		}else if(c.equals("/")) {
+			return new Token(TipoToken.OpAritDiv, "/");
+		}else if(c.equals("-")) {
+			return new Token(TipoToken.OpAritSub, "-");
+		}else if(c.equals("+")) {
+			return new Token(TipoToken.OpAritSoma, "+");
 		}else {
 			lc.retroceder();
 			return null;
@@ -169,15 +168,11 @@ public class AnalisadorLexico {
 	}
 	
 	public Token numeros() {
-		
-		//String lexema = "";
+
 		String c = lc.proximoCaracter();
 		boolean inteiro = true;
 		
 		if(Character.isDigit(c.charAt(0))) {
-			
-//			lc.retroceder(); // reinicia variaveis
-//			c = "0";
 			
 			while (Character.isDigit(c.charAt(0))) {
 				
@@ -185,7 +180,6 @@ public class AnalisadorLexico {
 				
 				if (Character.isDigit(c.charAt(0))) {
 					continue;
-					//lexema += c;
 				}else {
 					if (c.equals(".")) {
 						
@@ -193,7 +187,6 @@ public class AnalisadorLexico {
 						
 						if(Character.isDigit(proxC.charAt(0))) {
 							inteiro = false;
-							//lexema += proxC;
 							lc.retroceder();
 						}else {
 							lc.retroceder();
@@ -212,7 +205,6 @@ public class AnalisadorLexico {
 				
 				while (Character.isDigit(c.charAt(0))) {
 					c = lc.proximoCaracter();
-					//lexema += c;
 				}
 				
 				lc.retroceder();
@@ -231,12 +223,10 @@ public class AnalisadorLexico {
 	public Token variavel() {
 		
 		String c = lc.proximoCaracter();
-		//String lexema = "";
 		
 		if(Character.isLetter(c.charAt(0))) {
 			
 			while (Character.isLetterOrDigit(c.charAt(0))) {
-				//lexema += c;
 				c = lc.proximoCaracter();
 			}
 			
@@ -253,16 +243,11 @@ public class AnalisadorLexico {
 		
 		String c = lc.proximoCaracter();
 		String ch = "";
-		//String lexema = "";
 		
 		if(c == "'") {
-			
-//			lc.retroceder(); // reinicia variaveis
-//			c = "";
-			
+
 			while(!ch.equals("\n") && !ch.equals("'")) {
 				ch = lc.proximoCaracter();
-				//lexema += c;
 			}
 			
 			c =ch;
@@ -286,7 +271,7 @@ public class AnalisadorLexico {
 		
 		if(c.equals("%")) {
 			
-			while(!c.equals("\n")) {
+			while(c != "\n") { 
 				c = lc.proximoCaracter();
 			}
 			
@@ -305,13 +290,11 @@ public class AnalisadorLexico {
 	public Token palavraChave() {
 		
 		String c = lc.proximoCaracter();
-		//String lexema = "";
 		
 		if(Character.isLetter(c.charAt(0))) {
 			
 			while(Character.isLetter(c.charAt(0))) {
 				c = lc.proximoCaracter();
-				//lexema += c;
 			}
 			
 			if(lc.Lexema().equals("DECLARACOES")) {
@@ -356,7 +339,6 @@ public class AnalisadorLexico {
 	public Token fim() {
 		
 		String c = lc.proximoCaracter();
-		//String lexema = "";
 		
 		if(Character.isLetter(c.charAt(0))) {
 			
@@ -366,7 +348,6 @@ public class AnalisadorLexico {
 				if(c == null) {
 					break;
 				}
-				//lexema += c;
 			}
 		
 			if(lc.Lexema().equals("Fim")) {

@@ -1,7 +1,6 @@
 package view;
 
 import java.util.ArrayList;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -37,12 +36,12 @@ public class PrincipalController {
 		
 		while (!(tk = al.proximoToken()).lexema.equals("Fim")){
 			tabelaDeTokens.add(tk);
-			System.out.println("Lexema:" + tk.lexema + "    Tipo token: " + tk.n);
+			System.out.println("Lexema:" + tk.lexema + "    Tipo token: " + tk.nome.toString());
 			
 		}
 		
 		tabelaDeTokens.add(tk);
-		System.out.println("Lexema:" + tk.lexema + "    Tipo token: " + tk.n);
+		System.out.println("Lexema:" + tk.lexema + "    Tipo token: " + tk.nome.toString());
 		
 		tableViewTokens();
 		iniciaTable();
@@ -57,7 +56,16 @@ public class PrincipalController {
 	@FXML
 	public void iniciaTable() {
 		colLexema.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().lexema));
-		colTipoToken.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().n));
+		colTipoToken.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().nome.toString()));
 	}
+	
+//	 private void mostraMensagem (String msg, AlertType tipo) { // recebe uma String por paremetro
+//			
+//			Alert a = new Alert (tipo);
+//		
+//			a.setHeaderText(null);
+//			a.setContentText(msg);
+//			a.show();
+//		}
 	
 }
