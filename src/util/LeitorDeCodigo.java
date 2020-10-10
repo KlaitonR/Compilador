@@ -11,6 +11,7 @@ public class LeitorDeCodigo {
 	String lexema;
 	String buffer[];
 	int tCod;
+	int contBuffer;
 	
 	public void carregaCodigo(String codigo) {
 		
@@ -80,6 +81,7 @@ public class LeitorDeCodigo {
 		
 		String c = buffer[ponteiroBuffer];
 		ponteiroBuffer++;
+		contBuffer++;
 		
 		if(ponteiroBuffer == (buffer.length/2)) {
 			carregaBuffer2();

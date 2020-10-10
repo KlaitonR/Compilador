@@ -242,15 +242,15 @@ public class AnalisadorLexico {
 	public Token cadeia() {
 		
 		String c = lc.proximoCaracter();
-		String ch = "";
+		String pc = "";
 		
 		if(c == "'") {
 
-			while(!ch.equals("\n") && !ch.equals("'")) {
-				ch = lc.proximoCaracter();
+			while(!pc.equals("\n") && !pc.equals("'")) {
+				pc = lc.proximoCaracter();
 			}
 			
-			c =ch;
+			c = pc;
 			
 			if(c == "\n") { //Houve quebra de linha na cadeia, erro léxico
 				return null;
@@ -262,25 +262,43 @@ public class AnalisadorLexico {
 			lc.retroceder();
 			return null;
 		}
-
 	}
 	
 	public void espacosEcometarios() {
 		
 		String c = lc.proximoCaracter();
+		String pc;
 		
 		if(c.equals("%")) {
 			
-			while(c != "\n") { 
+			while(c.equals("\n")) { 
 				c = lc.proximoCaracter();
 			}
-			
-			//lc.retroceder();
+			//lc.retroceder(); //Comentar aqui
 			return;
 			
-		}else if (Character.isWhitespace(c. charAt(0))) {
-			return; 
-		}else if (!Character.isWhitespace(c.charAt(0)) && !c.equals("%")) {
+		}else if (Character.isWhitespace(c.charAt(0))) {
+			pc = " ";
+			while(Character.isWhitespace(pc.charAt(0))) { 
+				pc = lc.proximoCaracter();
+			}
+			
+			lc.retroceder();
+			
+			return;
+			
+		}else if(c.equals("\n")) {
+			
+			pc = "\n";
+			while(pc.equals("\n")) { 
+				pc = lc.proximoCaracter();
+			}
+			
+			lc.retroceder();
+			
+			return;
+			
+		}else if (!Character.isWhitespace(c.charAt(0)) && !c.equals("%") && !c.equals("\n")) {
 			lc.retroceder();
 			return;
 		}
@@ -342,13 +360,15 @@ public class AnalisadorLexico {
 		
 		if(Character.isLetter(c.charAt(0))) {
 			
-			while(Character.isLetter(c.charAt(0))) {
+			while(Character.isLetter(c.charAt(0))) { // e letra !m
 				c = lc.proximoCaracter();
 				
-				if(c == null) {
+				if(c == null || lc.lexema.equals("Fim")) {
 					break;
 				}
 			}
+			
+			//lc.retroceder(); //Comentado aqui
 		
 			if(lc.Lexema().equals("Fim")) {
 				return new Token(TipoToken.Fim, "Fim");
@@ -360,7 +380,5 @@ public class AnalisadorLexico {
 			lc.retroceder();
 			return null;
 		}
-	
 	}
-
 }
