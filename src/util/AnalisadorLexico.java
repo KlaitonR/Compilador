@@ -268,40 +268,60 @@ public class AnalisadorLexico {
 		
 		String c = lc.proximoCaracter();
 		String pc;
+			
+			if(c.equals("%")) {
+				
+				while(c.equals("\n")) { 
+					c = lc.proximoCaracter();
+				}
+				
+				pc = lc.proximoCaracter();
+			
+				if(!pc.equals(" ") && !pc.equals("\n") && !pc.equals("%")) {
+					//lc.retroceder();
+					return; 
+				}else {
+					//lc.retroceder();
+					espacosEcometarios();
+				}
+				
+				return;
+				
+			}else if (c.equals(" ")) {
+				
+				pc = " ";
+				while(pc.equals(" ")) { 
+					pc = lc.proximoCaracter();
+				}
+				
+				if(!pc.equals(" ") && !pc.equals("\n") && !pc.equals("%")) {
+					lc.retroceder();
+					return; 
+				}else {
+					lc.retroceder();
+					espacosEcometarios();
+				}
+				
+			}else if(c.equals("\n")) {
+				
+				pc = "\n";
+				while(pc.equals("\n")) { 
+					pc = lc.proximoCaracter();
+				}
+				
+				if(!pc.equals(" ") && !pc.equals("\n") && !pc.equals("%")) {
+					lc.retroceder();
+					return; 
+				}else {
+					lc.retroceder();
+					espacosEcometarios();
+				}
+				
+			}else if (!c.equals(" ") && !c.equals("%") && !c.equals("\n")) {
+				lc.retroceder();
+				return;
+			}
 		
-		if(c.equals("%")) {
-			
-			while(c.equals("\n")) { 
-				c = lc.proximoCaracter();
-			}
-			//lc.retroceder(); //Comentar aqui
-			return;
-			
-		}else if (Character.isWhitespace(c.charAt(0))) {
-			pc = " ";
-			while(Character.isWhitespace(pc.charAt(0))) { 
-				pc = lc.proximoCaracter();
-			}
-			
-			lc.retroceder();
-			
-			return;
-			
-		}else if(c.equals("\n")) {
-			
-			pc = "\n";
-			while(pc.equals("\n")) { 
-				pc = lc.proximoCaracter();
-			}
-			
-			lc.retroceder();
-			
-			return;
-			
-		}else if (!Character.isWhitespace(c.charAt(0)) && !c.equals("%") && !c.equals("\n")) {
-			lc.retroceder();
-			return;
-		}
 	
 	}
 	
