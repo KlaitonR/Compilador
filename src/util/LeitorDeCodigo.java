@@ -90,11 +90,9 @@ public class LeitorDeCodigo {
 			ponteiroBuffer = 0;
 		}
 		
-//		if(c == null) {
-//			return c = "-1";
-//		}else {
+
 			return c;
-//		}
+			
 	}
 	
 	public String proximoCaracter() {

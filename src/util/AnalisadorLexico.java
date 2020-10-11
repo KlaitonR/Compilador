@@ -271,18 +271,18 @@ public class AnalisadorLexico {
 			
 			if(c.equals("%")) {
 				
-				while(c.equals("\n")) { 
+				while(!c.equals("\n")) { 
 					c = lc.proximoCaracter();
 				}
 				
 				pc = lc.proximoCaracter();
 			
 				if(!pc.equals(" ") && !pc.equals("\n") && !pc.equals("%")) {
-					//lc.retroceder();
+					lc.retroceder();
 					return; 
 				}else {
-					//lc.retroceder();
-					espacosEcometarios();
+					lc.retroceder();
+					espacosEcometarios();  
 				}
 				
 				return;
