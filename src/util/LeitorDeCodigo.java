@@ -2,16 +2,16 @@ package util;
 
 public class LeitorDeCodigo {
 	
-	
-	int bufferAtual = 1;
 	String codigo;
-	int ponteiroCodigo;
-	int ponteiroBuffer;
-	int iniciolexema;
 	String lexema;
-	String buffer[];
+	int bufferAtual = 1;
+	int ponteiroCodigo;
+	int iniciolexema;
 	int tCod;
-	int contBuffer;
+	int ponteiroBuffer;
+	
+	public String buffer[];
+	public int contadorLinha;
 	
 	public void carregaCodigo(String codigo) {
 		
@@ -33,7 +33,7 @@ public class LeitorDeCodigo {
 					ponteiroCodigo++;
 					
 				}else {
-					break;
+					buffer[i] = null;
 				}
 			}
 			
@@ -50,7 +50,7 @@ public class LeitorDeCodigo {
 				buffer[i] = Character.toString(codigo.charAt(ponteiroCodigo));
 				ponteiroCodigo++;
 				}else{
-					break;
+					buffer[i] = null;
 				}
 
 			}
@@ -65,7 +65,6 @@ public class LeitorDeCodigo {
 		if(ponteiroBuffer < 0) {
 			ponteiroBuffer = buffer.length -1;
 		}
-		
 	}
 	
 	public void inicializarBuffer() {
@@ -75,13 +74,13 @@ public class LeitorDeCodigo {
 		buffer = new String [40];
 		ponteiroBuffer = 0;
 		carregaBuffer1();
+		contadorLinha = 1;
 	}
 	
 	public String lerCaracterDoBuffer() {
 		
 		String c = buffer[ponteiroBuffer];
-		ponteiroBuffer++;
-		contBuffer++;
+  		ponteiroBuffer++;
 		
 		if(ponteiroBuffer == (buffer.length/2)) {
 			carregaBuffer2();
@@ -90,7 +89,6 @@ public class LeitorDeCodigo {
 			ponteiroBuffer = 0;
 		}
 		
-
 			return c;
 			
 	}
@@ -112,13 +110,17 @@ public class LeitorDeCodigo {
 	
 	public void confirmar() {
 		iniciolexema = ponteiroBuffer;
+		
+//		if(lexema.equals("\n")) {
+//			contLinha++;
+//			contadorLinha = contLinha;
+//		}
+		
 		lexema = "";
 	}
 	
 	public String Lexema() {
 		return lexema;
 	}
-	
-	
 
 }

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-//import javafx.scene.control.Alert;
-//import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -35,13 +35,21 @@ public class PrincipalController {
 		tabelaDeTokens.clear();
 		
 		while (!(tk = al.proximoToken()).lexema.equals("Fim")){
-			tabelaDeTokens.add(tk);
-			System.out.println("Lexema:" + tk.lexema + "    Tipo token: " + tk.nome.toString());
-			
+		
+			if (!tk.nome.toString().equals("ERRO")) {
+				tabelaDeTokens.add(tk);
+				System.out.println("Lexema:" + tk.lexema + "    Tipo token: " + tk.nome.toString());
+			}else {
+				break;
+			}
 		}
 		
-		tabelaDeTokens.add(tk);
-		System.out.println("Lexema:" + tk.lexema + "    Tipo token: " + tk.nome.toString());
+		if(tk.nome.toString().equals("ERRO")) {
+			mostraMensagem("ERRO LÉXICO \nLinha: " + al.lc.contadorLinha + "\nLexema: " + tk.lexema, AlertType.ERROR);
+		}else {
+			tabelaDeTokens.add(tk);
+			System.out.println("Lexema:" + tk.lexema + "    Tipo token: " + tk.nome.toString());
+		}
 		
 		tableViewTokens();
 		iniciaTable();
@@ -59,13 +67,13 @@ public class PrincipalController {
 		colTipoToken.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().nome.toString()));
 	}
 	
-//	 private void mostraMensagem (String msg, AlertType tipo) { // recebe uma String por paremetro
-//			
-//			Alert a = new Alert (tipo);
-//		
-//			a.setHeaderText(null);
-//			a.setContentText(msg);
-//			a.show();
-//		}
+	 private void mostraMensagem (String msg, AlertType tipo) {
+			
+			Alert a = new Alert (tipo);
+		
+			a.setHeaderText(null);
+			a.setContentText(msg);
+			a.show();
+		}
 	
 }
