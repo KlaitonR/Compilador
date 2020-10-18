@@ -110,12 +110,6 @@ public class LeitorDeCodigo {
 	
 	public void confirmar() {
 		iniciolexema = ponteiroBuffer;
-		
-//		if(lexema.equals("\n")) {
-//			contLinha++;
-//			contadorLinha = contLinha;
-//		}
-		
 		lexema = "";
 	}
 	

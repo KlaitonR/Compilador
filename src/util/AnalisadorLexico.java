@@ -355,7 +355,7 @@ public class AnalisadorLexico {
 				if(pc == null)
 					return;
 			
-				if(!pc.equals(" ") && !pc.equals("\n") && !pc.equals("%")) {
+				if(!pc.equals(" ") && !pc.equals("\n") && !pc.equals("%") && !c.equals("\t")) {
 					lc.retroceder();
 					return; 
 				}else {
@@ -366,15 +366,14 @@ public class AnalisadorLexico {
 				return;
 				
 			}else if (c.equals(" ")) {
-				
-				pc = " ";
-				while(pc.equals(" ")) { 
-					pc = lc.proximoCaracter();
-					if(pc == null)
+			
+				while(c.equals(" ")) { 
+					c = lc.proximoCaracter();
+					if(c == null)
 						return;
 				}
 					
-				if(!pc.equals(" ") && !pc.equals("\n") && !pc.equals("%")) {
+				if(!c.equals(" ") && !c.equals("\n") && !c.equals("%") && !c.equals("\t")) {
 					lc.retroceder();
 					return; 
 				}else {
@@ -394,7 +393,7 @@ public class AnalisadorLexico {
 					lc.contadorLinha++;
 				}
 				
-				if(!c.equals(" ") && !c.equals("\n") && !c.equals("%")) { //pc.equals
+				if(!c.equals(" ") && !c.equals("\n") && !c.equals("%") && !c.equals("\t")) { //pc.equals
 					lc.retroceder();
 					return; 
 				}else {
@@ -402,7 +401,24 @@ public class AnalisadorLexico {
 					espacosEcometarios();
 				}
 				
-			}else if (!c.equals(" ") && !c.equals("%") && !c.equals("\n")) {
+			}else if (c.equals("\t")) {
+				
+				while(c.equals("\t")) {
+					
+					c = lc.proximoCaracter();
+					if(c == null)
+						return;
+				}
+				
+				if(!c.equals(" ") && !c.equals("\n") && !c.equals("%") && !c.equals("\t")) { 
+					lc.retroceder();
+					return; 
+				}else {
+					lc.retroceder();
+					espacosEcometarios();
+				}
+				
+			}else if (!c.equals(" ") && !c.equals("%") && !c.equals("\n") && !c.equals("\t")) {
 				lc.retroceder();
 				return;
 			}
@@ -479,21 +495,33 @@ public class AnalisadorLexico {
 	
 			if(Character.isLetter(c.charAt(0))) {
 				
-				while(Character.isLetter(c.charAt(0))) { // e letra !m
+				while(Character.isLetter(c.charAt(0))) { 
 					c = lc.proximoCaracter();
 					if(c == null)
 						return null;
 					
-					if(lc.lexema.equals("Fim")) {
+					if(lc.Lexema().equals("Fim")) {
 						break;
 					}
 				}
 				
 				if(lc.Lexema().equals("Fim")) {
-					return new Token(TipoToken.Fim, "Fim");
+					String proxC = lc.proximoCaracter();
+					if(proxC == null) {
+						return new Token(TipoToken.Fim, lc.Lexema());
+					}else {
+						lc.retroceder();
+						return new Token(TipoToken.ERRO, "Fim - Token Fim já declarado");
+					}
 				}else {
 					return null;
-				}	
+				}
+				
+//				if(lc.Lexema().equals("Fim")) {
+//					return new Token(TipoToken.Fim, "Fim");
+//				}else {
+//					return null;
+//				}	
 				
 			}else {
 				lc.retroceder();
