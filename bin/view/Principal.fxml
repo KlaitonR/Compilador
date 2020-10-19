@@ -18,10 +18,10 @@
                <children>
                   <Label text="Programa">
                      <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TextArea fx:id="codigo" prefHeight="513.0" prefWidth="329.0">
+                  <TextArea fx:id="codigo" prefHeight="283.0" prefWidth="309.0">
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
@@ -32,13 +32,18 @@
          <center>
             <VBox BorderPane.alignment="CENTER">
                <children>
+                  <Label text="Tabela de Tokens">
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Label>
                   <TableView fx:id="tabTokens" prefHeight="465.0" prefWidth="345.0">
                     <columns>
                       <TableColumn fx:id="colLexema" prefWidth="175.0" text="Token" />
                       <TableColumn fx:id="colTipoToken" prefWidth="175.0" text="Grupo" />
                     </columns>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="47.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
                   </TableView>
                   <Button mnemonicParsing="false" onAction="#lerCodigo" text="Analisar">
@@ -49,6 +54,22 @@
                </children>
             </VBox>
          </center>
+         <bottom>
+            <VBox prefHeight="275.0" prefWidth="700.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Buffer">
+                     <VBox.margin>
+                        <Insets left="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextArea fx:id="buffer" prefHeight="249.0" prefWidth="680.0">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </TextArea>
+               </children>
+            </VBox>
+         </bottom>
       </BorderPane>
    </children>
 </AnchorPane>
