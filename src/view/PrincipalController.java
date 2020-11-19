@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import util.AnalisadorLexico;
+import util.AnalisadorSintatico;
 import util.Token;
 
 public class PrincipalController {
@@ -34,19 +35,21 @@ public class PrincipalController {
 		
 		cod = codigo.getText();
 		AnalisadorLexico al = new AnalisadorLexico();
+		
 		al.lc.carregaCodigo(cod);
 		Token tk = null;
 		
 		tabelaDeTokens.clear();
 		
 		while (!(tk = al.proximoToken()).lexema.equals("Fim")){
-		
+			
 			if (!tk.nome.toString().equals("ERRO")) {
 				tabelaDeTokens.add(tk);
 				al.lc.terminal += "\nLexema: " + tk.lexema + " - Tipo token: " + tk.nome.toString() + "\n";
 			}else {
 				break;
 			}
+			
 		}
 		
 		if(tk.nome.toString().equals("ERRO")) {
@@ -56,12 +59,25 @@ public class PrincipalController {
 			tabelaDeTokens.add(tk);
 			al.lc.terminal += "\nLexema: " + tk.lexema + " - Tipo token: " + tk.nome.toString() + "\n";
 		}
-		
+		 
 		tableViewTokens();
 		iniciaTable();
 		buffer.setText(buf = al.lc.terminal);
 		Font font = Font.font("consolas", FontWeight.NORMAL, FontPosture.REGULAR, 13);
 		buffer.setFont(font);
+		
+		al.lc.bufferAtual = 2;
+		al.lc.contadorLinha = 1;
+		al.lc.analise = "";
+		al.lc.iniciolexema = 0;
+		al.lc.ponteiroBuffer = 0;
+		al.lc.ponteiroCodigo = 0;
+		al.lc.terminal = "";
+		al.lc.buffer = null;
+		tk = null;
+		
+		AnalisadorSintatico as =  new AnalisadorSintatico(al);
+		as.programa();
 	}
 	
 	@FXML

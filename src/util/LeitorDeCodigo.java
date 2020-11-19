@@ -2,14 +2,14 @@ package util;
 
 public class LeitorDeCodigo {
 	
-	String buffer[];
+	public String buffer[];
 	String codigo;
 	String lexema;
-	int bufferAtual = 1;
-	int ponteiroCodigo;
-	int iniciolexema;
-	int tCod;
-	int ponteiroBuffer;
+	public int bufferAtual = 1;
+	public int ponteiroCodigo;
+	public int iniciolexema;
+	public int tCod;
+	public int ponteiroBuffer;
 	
 	public String analise = "";
 	public String terminal = "";
@@ -89,14 +89,26 @@ public class LeitorDeCodigo {
 	
 	public String proximoCaracter() {
 		
-		exibeBuffer();
+		if(buffer != null) { // Fase do Analisador léxico
 		
-		String c = lerCaracterDoBuffer();
-		
-		if(c != null)
-			lexema += c;
-		
-		return c;
+			exibeBuffer();
+			String c = lerCaracterDoBuffer();
+			if(c != null)
+				lexema += c;
+			
+			return c;
+			
+		}else { // Fase do analisador sintatico
+			
+			buffer = new String [40];
+			carregaBuffer1();
+			exibeBuffer();
+			String c = lerCaracterDoBuffer();
+			if(c != null)
+				lexema += c;
+			
+			return c;
+		}
 	}
 	
 	public void zerar() {
