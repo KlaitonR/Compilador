@@ -78,6 +78,11 @@ public class PrincipalController {
 		
 		AnalisadorSintatico as =  new AnalisadorSintatico(al);
 		as.programa();
+		
+		if(!as.erro.equals("")){
+			mostraMensagem(as.erro, AlertType.ERROR);
+		}
+		
 	}
 	
 	@FXML

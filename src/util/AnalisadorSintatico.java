@@ -10,6 +10,8 @@ public class AnalisadorSintatico {
 	AnalisadorLexico lex;
 	boolean fim;
 	
+	public String erro = "";
+	
 	
 	public AnalisadorSintatico(AnalisadorLexico lex) {
 		this.lex = lex;
@@ -67,7 +69,8 @@ public class AnalisadorSintatico {
 				msg += ",";
 		}
 		
-		msg += "), mas foi encontrado " + lookahead(1).nome;
+		msg += "), mas foi encontrado " + lookahead(1).nome + " na linha " + lex.lc.contadorLinha + "\n";
+		erro += msg;
 		System.out.println(msg);
 	}
 	
