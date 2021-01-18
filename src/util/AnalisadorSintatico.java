@@ -9,11 +9,12 @@ public class AnalisadorSintatico {
 	List<Token> bufferTokens;
 	AnalisadorLexico lex;
 	boolean fim;
-	
+	TabelaDeSimbolos ts;
+
 	public String erro = "";
 	
-	
 	public AnalisadorSintatico(AnalisadorLexico lex) {
+		ts = new TabelaDeSimbolos();
 		this.lex = lex;
 		bufferTokens = new ArrayList<Token>();
 		lerToken();
@@ -99,89 +100,155 @@ public class AnalisadorSintatico {
 
     //declaracao : VARIAVEL ':' tipoVar;
     void declaracao() {
+        String nomeVar = lookahead(1).lexema;
+//*        System.out.println("nomeVar= "+nomeVar);
         match(TipoToken.Var);
         match(TipoToken.Delim);
-        tipoVar();
+        TipoVariavel tipoVar = tipoVar();
+//*        System.out.println("tipoVar= "+tipoVar);
+        ts.inserirNaTabela(nomeVar, tipoVar); // instalar o nome na lista
     }
 
     //tipoVar : 'INTEIRO' | 'REAL';
-    void tipoVar() {
+    TipoVariavel tipoVar() { 
         if (lookahead(1).nome == TipoToken.PCInteiro) {
             match(TipoToken.PCInteiro);
+            return TipoVariavel.INT; 
         } else if (lookahead(1).nome == TipoToken.PCReal) {
             match(TipoToken.PCReal);
+            return TipoVariavel.REAL; 
         } else {
             erroSintatico("INTEIRO","REAL");
+            return null;
         }
     }
 
     //expressaoAritmetica : expressaoAritmetica '+' termoAritmetico | expressaoAritmetica '-' termoAritmetico | termoAritmetico;
-    void expressaoAritmetica() {
-        termoAritmetico();
-        expressaoAritmetica2();
-    }
-
-    void expressaoAritmetica2() {
-        if (lookahead(1).nome == TipoToken.OpAritSoma || lookahead(1).nome == TipoToken.OpAritSub) {
-            expressaoAritmetica2SubRegra1();
-            expressaoAritmetica2();
-        } else { // vazio
+    TipoVariavel expressaoAritmetica() { // TipoVariavel
+        TipoVariavel tipoTermo = termoAritmetico(); //Lado esquerdo da expressão (2) 
+        TipoVariavel tipoExp = expressaoAritmetica2();//Lado direito da expressão(+3)
+        if (tipoTermo == TipoVariavel.REAL || tipoExp == TipoVariavel.REAL){
+            return TipoVariavel.REAL;//Caso 1 dos 2 retorne REAL, então a expressão 
+        } else {                     //assume tipo REAL
+            return TipoVariavel.INT;//Caso contrário assume INT
         }
     }
 
-    void expressaoAritmetica2SubRegra1() {
+    TipoVariavel expressaoAritmetica2() {
+        if (lookahead(1).nome == TipoToken.OpAritSoma || 
+                lookahead(1).nome == TipoToken.OpAritSub) {
+            TipoVariavel tipoTermo = expressaoAritmetica2SubRegra1();
+            TipoVariavel tipoExp = expressaoAritmetica2();
+            if (tipoTermo == TipoVariavel.REAL || tipoExp == TipoVariavel.REAL){
+                return TipoVariavel.REAL;
+            } else {
+                return TipoVariavel.INT;
+            }
+        } else { // vazio
+            return null;
+        }
+    }
+
+    TipoVariavel expressaoAritmetica2SubRegra1() {
         if (lookahead(1).nome == TipoToken.OpAritSoma) {
             match(TipoToken.OpAritSoma);
-            termoAritmetico();
+            TipoVariavel tipoTermo = termoAritmetico();
+            if (tipoTermo == TipoVariavel.REAL){
+                return TipoVariavel.REAL;
+            } else {
+                return TipoVariavel.INT;
+            }
         } else if (lookahead(1).nome == TipoToken.OpAritSub) {
             match(TipoToken.OpAritSub);
-            termoAritmetico();
+            TipoVariavel tipoTermo = termoAritmetico();
+            if (tipoTermo == TipoVariavel.REAL){
+                return TipoVariavel.REAL;
+            } else {
+                return TipoVariavel.INT;
+            }
         } else {
             erroSintatico("+","-");
+            return null; 
         }
     }
 
     //termoAritmetico : termoAritmetico '*' fatorAritmetico | termoAritmetico '/' fatorAritmetico | fatorAritmetico;
-     void termoAritmetico() {
-        fatorAritmetico();
-        termoAritmetico2();
+     TipoVariavel termoAritmetico() {
+        TipoVariavel tipoFator = fatorAritmetico();
+        TipoVariavel tipoTermo = termoAritmetico2(); 
+        if (tipoFator == TipoVariavel.REAL || tipoTermo == TipoVariavel.REAL){
+                return TipoVariavel.REAL;
+            } else {
+                return TipoVariavel.INT;
+            }
+
     }
 
-    void termoAritmetico2() {
-        if (lookahead(1).nome == TipoToken.OpAritMult || lookahead(1).nome == TipoToken.OpAritDiv) {
-            termoAritmetico2SubRegra1();
-            termoAritmetico2();
+    TipoVariavel termoAritmetico2() {
+        if (lookahead(1).nome == TipoToken.OpAritMult || 
+                lookahead(1).nome == TipoToken.OpAritDiv) {
+            TipoVariavel tipoTermo = termoAritmetico2SubRegra1();
+            TipoVariavel tipoTermo2 = termoAritmetico2();
+            if (tipoTermo == TipoVariavel.REAL || tipoTermo2 == TipoVariavel.REAL){
+                return TipoVariavel.REAL;
+            } else {
+                return TipoVariavel.INT;
+            }
         } else { // vazio
+            return null; 
         }
     }
 
-    void termoAritmetico2SubRegra1() {
+    TipoVariavel termoAritmetico2SubRegra1() {
         if (lookahead(1).nome == TipoToken.OpAritMult) {
             match(TipoToken.OpAritMult);
-            fatorAritmetico();
+            TipoVariavel tipoFator = fatorAritmetico(); 
+            if (tipoFator == TipoVariavel.REAL){
+                return TipoVariavel.REAL;
+            } else {
+                return TipoVariavel.INT;
+            }//!!!!
         } else if (lookahead(1).nome == TipoToken.OpAritDiv) {
             match(TipoToken.OpAritDiv);
-            fatorAritmetico();
+            TipoVariavel tipoFator = fatorAritmetico(); 
+            if (tipoFator == TipoVariavel.REAL){
+                return TipoVariavel.REAL;
+            } else {
+                return TipoVariavel.INT;
+            }
         } else {
             erroSintatico("*","/");
+            return null; 
         }
     }
 
     //fatorAritmetico : NUMINT | NUMREAL | VARIAVEL | '(' expressaoAritmetica ')'
-    void fatorAritmetico() {
+    TipoVariavel fatorAritmetico() {
         if (lookahead(1).nome == TipoToken.NumInt) {
             match(TipoToken.NumInt);
+            return TipoVariavel.INT;
         } else if (lookahead(1).nome == TipoToken.NumReal) {
             match(TipoToken.NumReal);
+            return TipoVariavel.REAL;
         } else if (lookahead(1).nome == TipoToken.Var) {
+            // tabela de símbolos
+            String nomeVar = lookahead(1).lexema;
+            if (!ts.jaFoiDeclarado(nomeVar)) {
+                throw new RuntimeException("Erro Semântico: A variável " + nomeVar + " não está declarada!!");
+            }
+            TipoVariavel tipoVar = ts.determinaTipo(nomeVar);
             match(TipoToken.Var);
+            return tipoVar;//Retorna o tipo da variável para ajudar a compor o
+                            // tipo da expressão
         } else if (lookahead(1).nome == TipoToken.AbrePar) {
             match(TipoToken.AbrePar);
-            expressaoAritmetica();
+            TipoVariavel tipoExp = expressaoAritmetica();
             match(TipoToken.FechaPar);
         } else {
-            erroSintatico(TipoToken.NumInt.name(),TipoToken.NumReal.name(),TipoToken.Var.name(),"(");
+            erroSintatico(TipoToken.NumInt.toString(), TipoToken.NumReal.toString(), TipoToken.Var.toString(), "(");
+            return null; 
         }
+        return null; 
     }
 
     //expressaoRelacional : expressaoRelacional operadorBooleano termoRelacional | termoRelacional;
@@ -209,7 +276,7 @@ public class AnalisadorSintatico {
             opRel();
             expressaoAritmetica();
         } else {
-            erroSintatico(TipoToken.NumInt.name(),TipoToken.NumReal.name(),TipoToken.Var.name(),"(");
+            erroSintatico(TipoToken.NumInt.toString(),TipoToken.NumReal.toString(),TipoToken.Var.toString(),"(");
         }
     }
 
@@ -283,11 +350,18 @@ public class AnalisadorSintatico {
     //comandoAtribuicao : 'ATRIBUIR' expressaoAritmetica 'A' VARIAVEL;
     void comandoAtribuicao() {
         match(TipoToken.PCAtribuir);
-        expressaoAritmetica();
+        TipoVariavel tipoExp = expressaoAritmetica();
         match(TipoToken.PCA);
+        String nomeVar = lookahead(1).lexema;
+        if(!ts.jaFoiDeclarado(nomeVar)){
+            throw new RuntimeException("Erro Semântico: Variavel "+nomeVar+" não foi declarada");
+        }//!!!
+        TipoVariavel tipoVar = ts.determinaTipo(nomeVar);
         match(TipoToken.Var);
+        if (tipoVar == TipoVariavel.INT && tipoExp == TipoVariavel.REAL){
+            throw new RuntimeException("Erro Semântico: Variável "+nomeVar+" deve ser do tipo REAL!!");
+        }
     }
-
     //comandoEntrada : 'LER' VARIAVEL;
     void comandoEntrada() {
         match(TipoToken.PCLer);
@@ -306,7 +380,7 @@ public class AnalisadorSintatico {
         } else if (lookahead(1).nome == TipoToken.Cadeia) {
             match(TipoToken.Cadeia);
         } else {
-            erroSintatico(TipoToken.Var.name(),TipoToken.Cadeia.name());
+            erroSintatico(TipoToken.Var.toString(),TipoToken.Cadeia.toString());
         }
     }
 
@@ -341,4 +415,5 @@ public class AnalisadorSintatico {
         listaComandos();
         match(TipoToken.PCFim);
     }
+
 }
